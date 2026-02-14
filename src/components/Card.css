@@ -1,0 +1,36 @@
+.card {
+  padding: 2em;
+  width: 400px;
+  padding: 1rem;
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.attack {
+  flex-grow: 1;
+}
+.Grass {
+  border-color: green;
+}
+
+.Lightning {
+  border-color: lightblue;
+}
+
+.Water {
+  border-color: blue;
+}
+
+.Psychic {
+  border-color: purple;
+}
+
+.Fire {
+  border-color: red;
+}

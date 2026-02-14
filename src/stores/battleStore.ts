@@ -1,0 +1,142 @@
+import {create} from "zustand"
+import type { PokemonCard, Attack } from "../types/card";
+import { useRandomPokemonCards } from "../hooks/usePokemon";
+
+interface BattleState {
+  // Player
+  playerHP: number
+  playerHand: PokemonCard[]
+  playerDeck: PokemonCard[]
+  playerBench: PokemonCard[]
+  playerActiveCard: PokemonCard | null
+
+
+  // CPU
+  opponentHP: number
+  opponentHand: PokemonCard[]
+  opponentDeck: PokemonCard[]
+  opponentBench: PokemonCard[]
+  opponentActiveCard: PokemonCard | null
+
+  //Game State
+  currentTurn: 'player' | 'opponent'
+  turnNumber: number
+  gameStatus: 'waiting' | 'active' | 'finished'
+  winner: 'player' | 'opponent' | null
+
+  // Actions
+  startBattle: () => void
+  playCard: (card: PokemonCard, player: 'player' | 'opponent') => void
+  attackWithCard: (attack: Attack, attacker: "player" | "opponent") => void
+  endTurn: ()  => void
+  resetBattle: () => void
+  setActiveCard: (card: PokemonCard, player: 'player' | 'opponent') => void
+}
+
+export const useBattleStore = create<BattleState>((set, get) => ({
+  playerHP: 100,
+  playerHand: [],
+  playerDeck: [],
+  playerBench: [],
+  playerActiveCard: null,
+
+
+  opponentHP: 100,
+  opponentHand: [],
+  opponentDeck: [],
+  opponentBench: [],
+  opponentActiveCard: null,
+
+  currentTurn: 'player',
+  turnNumber: 1,
+  gameStatus: 'waiting',
+  winner: null,
+
+  startBattle: (playerDeck, opponentDeck) => set({
+    playerDeck,
+    opponentDeck,
+    playerHP: 100,
+    opponentHP: 100,
+    opponentBench: [],
+    playerBench: [],
+    playerHand: playerDeck.slice(0,3),
+    opponentHand: opponentDeck.slice(0,3),
+    gameStatus: "active",
+    currentTurn: "player",
+    turnNumber: 1
+  }),
+
+  playCard: (card, player) => set((state) => {
+    const hand = player === "player" ? state.playerHand : state.opponentHand;
+    const bench = player === 'player' ? state.playerBench : state.opponentBench
+
+    const newHand = hand.filter(c => c.id !== card.id);
+    const newBench = [...bench, card];
+    return player === "player" ? {playerHand: newHand, playerBench: newBench} : {opponentHand: newHand, opponentBench: newBench}
+  }),
+
+  setActiveCard: ( card, player) => set((state) => {
+    const bench = player === 'player' ? state.playerBench : state.opponentBench
+    const newBench = bench.filter(b => b.id !== card.id)
+
+    return player === "player" ? {playerActiveCard: card, playerBench: newBench} : {opponentActiveCard: card, opponentBench: newBench}
+  }),
+
+  attackWithCard: (attack, attacker) => set((state) => {
+    const damage = typeof attack.damage === "string" ? parseInt(attack.damage) || 0 : attack.damage || 0;
+
+    const defender = attacker === "player" ? "opponent" : "player";
+
+    const currentHP = defender == "player" ? state.playerHP : state.opponentHP;
+
+    const newHP = Math.max(0, currentHP - damage);
+
+    let winner: "player" | "opponent" | null = null;
+
+    let gameStatus: "waiting" | "active" | "finished" = state.gameStatus;
+
+    if (newHP === 0) {
+      winner = attacker
+      gameStatus = "finished"
+    }
+
+    if (defender === "player") {
+      return {
+        playerHP: newHP,
+        winner,
+        gameStatus
+      }
+    } else {
+      return {
+        opponentHP: newHP,
+        winner,
+        gameStatus
+      }
+    }
+  }),
+
+  endTurn: () => set((state) => ({
+      currentTurn: state.currentTurn === "player" ? "opponent" : "player",
+      turnNumber: state.currentTurn === "opponent" ? state.turnNumber + 1 : state.turnNumber
+  })),
+
+  resetBattle: () => set({
+    playerHP: 100,
+    playerHand: [],
+    playerDeck: [],
+    playerBench: [],
+    playerActiveCard: null,
+
+
+    opponentHP: 100,
+    opponentHand: [],
+    opponentDeck: [],
+    opponentBench: [],
+    opponentActiveCard: null,
+
+    currentTurn: 'player',
+    turnNumber: 1,
+    gameStatus: 'waiting',
+    winner: null,
+  })
+}))
