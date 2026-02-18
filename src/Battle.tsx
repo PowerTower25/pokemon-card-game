@@ -3,7 +3,7 @@ import {pokemonApi} from "./api/pokemon"
 import Card from "./components/Card";
 
 const Battle = () => {
-  const { gameStatus, turnNumber, playerActiveCard, opponentActiveCard, currentTurn, attackWithCard, endTurn, winner, resetBattle} = useBattleStore();
+  const { gameStatus, turnNumber, playerActiveCard, opponentActiveCard, attackWithCard, endTurn, winner, resetBattle} = useBattleStore();
 
   const startBattle = useBattleStore((state) => state.startBattle);
   const playerDeck = useBattleStore((state) => state.playerDeck);
@@ -16,6 +16,7 @@ const Battle = () => {
   const opponentDeck = useBattleStore((state) => state.opponentDeck);
   const playCard = useBattleStore((state) => state.playCard);
   const setActiveCard = useBattleStore((state) => state.setActiveCard);
+  const currentTurn = useBattleStore((state) => state.currentTurn);
 
   
 
@@ -34,14 +35,14 @@ const Battle = () => {
   return (
     <>
     <button onClick={() => handleStart()} className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Start the battle</button>
-
+    <button onClick={() => endTurn()} className="cursor-pointer bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">End Turn!</button>
     <div className="grid grid-cols-[250px_1fr_250px] gap-4 hr-screen p-4">
       <div>
         <p>Player 1 HP {playerHP}</p>
         {playerHand && playerHand.map((card) =>(
           <div key={card.id}>
             <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types} />
-            <button onClick={ () => playCard(card, "player")}>Play Card</button>
+            <button disabled={currentTurn !== "player"} onClick={ () => playCard(card, "player")}>Play Card</button>
           </div>
           
         ))}
@@ -50,13 +51,13 @@ const Battle = () => {
       <div>
       {playerBench && playerBench.map((card) =>(
         <div key={card.id}>
-            <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
+            <Card name={card.name} attacker={"player"} attacks={card.attacks} hp={card.hp} type={card.types}/>
             <button onClick={() => setActiveCard(card, "player")}>Play Card</button>
           </div>
         ))}
       {opponentBench && opponentBench.map((card) =>(
         <div key={card.id}>
-            <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
+            <Card name={card.name} attacks={card.attacks} attacker={"opponent"} hp={card.hp} type={card.types}/>
             <button onClick={() => setActiveCard(card, "opponent")}>Play Card</button>
           </div>
         ))}
@@ -66,7 +67,7 @@ const Battle = () => {
         {opponentHand && opponentHand.map((card) =>(
         <div key={card.id}>
             <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
-            <button onClick={() => playCard(card, "opponent")}>Play Card</button>
+            <button disabled={currentTurn !== "opponent"} onClick={() => playCard(card, "opponent")}>Play Card</button>
           </div>
         ))}
       </div>

@@ -1,6 +1,8 @@
+import { useBattleStore } from "../stores/battleStore"
 import "./Card.css"
 
-const Card = ({attacks, name, hp, type}) => {
+const Card = ({attacks, name, hp, type, attacker}) => {
+  const attackWithCard = useBattleStore((state) => state.attackWithCard)
   return (
   <div>
         <div className={`card bg-white rounded-lg shadow p4 border ${type}`}>
@@ -11,7 +13,7 @@ const Card = ({attacks, name, hp, type}) => {
           <div>
           {attacks && attacks.map((attack, index) => (
             <div key={index} className="attack">
-              <button className="cursor-pointer  border rounded-sm"><strong>{attack.name}</strong> {attack.damage ? (attack.damage) : null}</button>
+              <button onClick={() => attackWithCard(attack, attacker)} className="cursor-pointer  border rounded-sm"><strong>{attack.name}</strong> {attack.damage ? (attack.damage) : null}</button>
               <p>{attack.effect}</p>
               <p>Cost: {attack.cost.join(', ')}</p>  
             </div>
