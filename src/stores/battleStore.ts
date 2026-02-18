@@ -8,6 +8,7 @@ interface BattleState {
   playerDeck: PokemonCard[]
   playerBench: PokemonCard[]
   playerActiveCard: PokemonCard | null
+  playerDiscardPile: PokemonCard[]
 
 
   // CPU
@@ -16,6 +17,7 @@ interface BattleState {
   opponentDeck: PokemonCard[]
   opponentBench: PokemonCard[]
   opponentActiveCard: PokemonCard | null
+  opponentDiscardPile: PokemonCard[]
 
   //Game State
   currentTurn: 'player' | 'opponent'
@@ -38,6 +40,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   playerDeck: [],
   playerBench: [],
   playerActiveCard: null,
+  playerDiscardPile: [],
 
 
   opponentHP: 100,
@@ -45,6 +48,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   opponentDeck: [],
   opponentBench: [],
   opponentActiveCard: null,
+  opponentDiscardPile: [],
 
   currentTurn: 'player',
   turnNumber: 1,
@@ -72,7 +76,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     const newHand = hand.filter(c => c.id !== card.id);
 
     const newBench = [...bench, card];
-    return player === "player" ? {playerHand: newHand, playerBench: newBench} : {opponentHand: newHand, opponentBench: newBench}
+    return player === "player" ? {playerActiveCard: card, playerHand: newHand, playerBench: newBench} : {opponentActiveCard: card, opponentHand: newHand, opponentBench: newBench}
   }),
 
   setActiveCard: (card, player) => set((state) => {
@@ -87,9 +91,37 @@ export const useBattleStore = create<BattleState>((set, get) => ({
 
     const defender = attacker === "player" ? "opponent" : "player";
 
+    const defenderActiveCard = defender === "player" ? state.playerActiveCard : state.opponentActiveCard;
+
     const currentHP = defender == "player" ? state.playerHP : state.opponentHP;
 
-    const newHP = Math.max(0, currentHP - damage);
+    let remainingDamage = damage;
+    let newActiveCard = defenderActiveCard;
+    let newHP = currentHP
+
+    console.log(defenderActiveCard, " defender")
+
+    let newDiscardPile = defender === "player" ? [...state.playerDiscardPile] : [...state.opponentDiscardPile]
+
+    if (defenderActiveCard && defenderActiveCard.hp) {
+      const cardHP = defenderActiveCard.hp
+      if (damage > cardHP) {
+        remainingDamage = damage - cardHP
+
+        newDiscardPile.push(defenderActiveCard)
+        newActiveCard = null;
+        console.log(`${defenderActiveCard.name} was knocked out!`)
+      } else {
+        newActiveCard = {
+          ...defenderActiveCard,
+          hp: cardHP - damage
+        }
+        remainingDamage = 0;
+      }
+    }
+    if (remainingDamage > 0) {
+      newHP = Math.max(0, currentHP - remainingDamage)
+    }
 
     let winner: "player" | "opponent" | null = null;
 
@@ -103,12 +135,16 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     if (defender === "player") {
       return {
         playerHP: newHP,
+        playerActiveCard: newActiveCard,
+        playerDiscardPile: newDiscardPile,
         winner,
         gameStatus
       }
     } else {
       return {
         opponentHP: newHP,
+        opponentActiveCard: newActiveCard,
+        opponentDiscardPile: newDiscardPile,
         winner,
         gameStatus
       }

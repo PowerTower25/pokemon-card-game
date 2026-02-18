@@ -7,7 +7,7 @@ import type { Attack, PokemonCard } from "./types/card";
 import Hand from "./components/hand/Hand";
 
 const Battle = () => {
-  const { gameStatus, turnNumber, playerActiveCard, opponentActiveCard, winner, resetBattle} = useBattleStore();
+  const { gameStatus, turnNumber, winner, resetBattle} = useBattleStore();
 
   const startBattle = useBattleStore((state) => state.startBattle);
   const attackWithCard = useBattleStore((state) => state.attackWithCard);
@@ -21,6 +21,8 @@ const Battle = () => {
   const opponentDeck = useBattleStore((state) => state.opponentDeck);
   const playCard = useBattleStore((state) => state.playCard);
   const setActiveCard = useBattleStore((state) => state.setActiveCard);
+  const playerActiveCard = useBattleStore((state) => state.playerActiveCard);
+  const opponentActiveCard = useBattleStore((state) => state.opponentActiveCard)
   const currentTurn = useBattleStore((state) => state.currentTurn);
   const endTurn = useBattleStore((state) => state.endTurn);
 
