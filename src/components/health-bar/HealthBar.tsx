@@ -4,7 +4,7 @@ const HealthBar = ({width, text, fillColor}) => {
 
   return (
     <>
-      <div className="bar-chart">
+      <div className="bar-chart" aria-live="polite" aria-atomic="true">
         <span className="bar-chart__fill" style={{
         width: `${width}%`, // Use template literal to add '%' unit
         backgroundColor: fillColor, // Apply dynamic color

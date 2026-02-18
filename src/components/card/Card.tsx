@@ -2,13 +2,14 @@ import {motion} from "framer-motion";
 import "./Card.css"
 import { useState } from "react";
 import { useBattleStore } from "../../stores/battleStore";
+import type { Attack } from "../../types/card";
 const Card = ({attacks, name, hp, type, onAttack, attacker}) => {
   const [isAttacking, setIsAttacking] = useState(false);
 
   const currentTurn = useBattleStore((state) => state.currentTurn);
   
   const isDisabled = currentTurn !== attacker
-  const handleAttackClick = (attack, attacker) => {
+  const handleAttackClick = (attack: Attack, attacker: string) => {
     if (isDisabled) return;
     setIsAttacking(true)
     onAttack(attack, attacker)
@@ -19,7 +20,7 @@ const Card = ({attacks, name, hp, type, onAttack, attacker}) => {
     x: attacker === "player" ? [0, 100, 0]: [0, -100, 0],
     
   }: {}}
-  transition={{duration: 0.8}}
+  transition={{duration: 0.5}}
   onAnimationComplete={() => setIsAttacking(false)}
   >
         <div className={`card bg-white rounded-lg shadow p4 border ${type}`}>
@@ -28,7 +29,7 @@ const Card = ({attacks, name, hp, type, onAttack, attacker}) => {
             <p>HP: {hp}</p>
           </div>
           <div>
-          {attacks && attacks.map((attack, index) => (
+          {attacks && attacks.map((attack: Attack, index: number) => (
             <div key={index} className="attack">
               <button disabled={isDisabled} onClick={() => handleAttackClick(attack, attacker)} className="cursor-pointer  border rounded-sm"><strong>{attack.name}</strong> {attack.damage ? (attack.damage) : null}</button>
               <p>{attack.effect}</p>
