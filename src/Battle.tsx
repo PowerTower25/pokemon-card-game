@@ -3,11 +3,13 @@ import {pokemonApi} from "./api/pokemon"
 import Card from "./components/card/Card";
 import { useEffect, useState } from "react";
 import HealthBar from "./components/health-bar/HealthBar";
+import type { Attack, PokemonCard } from "./types/card";
 
 const Battle = () => {
-  const { gameStatus, turnNumber, playerActiveCard, opponentActiveCard, attackWithCard, endTurn, winner, resetBattle} = useBattleStore();
+  const { gameStatus, turnNumber, playerActiveCard, opponentActiveCard, winner, resetBattle} = useBattleStore();
 
   const startBattle = useBattleStore((state) => state.startBattle);
+  const attackWithCard = useBattleStore((state) => state.attackWithCard);
   const playerDeck = useBattleStore((state) => state.playerDeck);
   const playerHP = useBattleStore((state) => state.playerHP);
   const playerHand = useBattleStore((state) => state.playerHand);
@@ -19,8 +21,11 @@ const Battle = () => {
   const playCard = useBattleStore((state) => state.playCard);
   const setActiveCard = useBattleStore((state) => state.setActiveCard);
   const currentTurn = useBattleStore((state) => state.currentTurn);
+  const endTurn = useBattleStore((state) => state.endTurn);
+
+  // Local States
   const [playerColor, setPlayerColor] = useState("#4C9C00");
-    const [opponentColor, setOpponentColor] = useState("#4C9C00")
+  const [opponentColor, setOpponentColor] = useState("#4C9C00")
 
 
   useEffect(() => {
@@ -48,6 +53,19 @@ const Battle = () => {
     startBattle(playerDeck, opponentDeck);
   }
 
+  const handlePlayCard = (card: PokemonCard, player: 'player' | 'opponent') => {
+    if (currentTurn !== player) return;
+    playCard(card, player)
+    endTurn();
+  }
+
+  const handleAttack = (attack: Attack, attacker: 'player' | 'opponent') => {
+    if (currentTurn !== attacker) return;
+
+    attackWithCard(attack, attacker)
+
+    endTurn();
+  }
 
   return (
     <>
@@ -59,7 +77,7 @@ const Battle = () => {
         {playerHand && playerHand.map((card) =>(
           <div key={card.id} style={{paddingTop: "15px"}}>
             <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types} />
-            <button disabled={currentTurn !== "player"} onClick={ () => playCard(card, "player")}>Play Card</button>
+            <button onClick={ () => handlePlayCard(card, "player")}>Play Card</button>
           </div>
           
         ))}
@@ -68,13 +86,13 @@ const Battle = () => {
       <div>
       {playerBench && playerBench.map((card) =>(
         <div key={card.id}>
-            <Card name={card.name} attacker={"player"} attacks={card.attacks} hp={card.hp} type={card.types}/>
+            <Card name={card.name} attacker="player" onAttack={handleAttack} attacks={card.attacks} hp={card.hp} type={card.types}/>
             <button onClick={() => setActiveCard(card, "player")}>Play Card</button>
           </div>
         ))}
       {opponentBench && opponentBench.map((card) =>(
         <div key={card.id}>
-            <Card name={card.name} attacks={card.attacks} attacker={"opponent"} hp={card.hp} type={card.types}/>
+            <Card name={card.name} attacker="opponent" attacks={card.attacks} onAttack={handleAttack} hp={card.hp} type={card.types}/>
             <button onClick={() => setActiveCard(card, "opponent")}>Play Card</button>
           </div>
         ))}
@@ -84,7 +102,7 @@ const Battle = () => {
         {opponentHand && opponentHand.map((card) =>(
         <div key={card.id} style={{paddingTop: "15px"}}>
             <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
-            <button disabled={currentTurn !== "opponent"} onClick={() => playCard(card, "opponent")}>Play Card</button>
+            <button onClick={() => handlePlayCard(card, "opponent")}>Play Card</button>
           </div>
         ))}
       </div>
