@@ -18,41 +18,41 @@ const Battle = () => {
     <>
     <button onClick={() => handleStart()} className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Start the battle</button>
 
-    <div className="grid grid-cols-5 gap-4">
-      
-      {opponentHand && opponentHand.map((card) =>(
-       <div key={card.id}>
-          <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
-          <button onClick={() => playCard(card, "opponent")}>Play Card</button>
-        </div>
-      ))}
-    </div>
-    <div>
-    {opponentBench && opponentBench.map((card) =>(
-       <div key={card.id}>
-          <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
-          <button onClick={() => setActiveCard(card, "opponent")}>Play Card</button>
-        </div>
-      ))}
-    </div>
+    <div className="grid grid-cols-[250px_1fr_250px] gap-4 hr-screen p-4">
+      <div>
+        {playerHand && playerHand.map((card) =>(
+          <div key={card.id}>
+            <Card  name={card.name} attacks={card.attacks} hp={card.hp} type={card.types} />
+            <button onClick={ () => playCard(card, "player")}>Play Card</button>
+          </div>
+          
+        ))}
+      </div>
 
-    <div>
-    {playerBench && playerBench.map((card) =>(
-       <div key={card.id}>
-          <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
-          <button onClick={() => setActiveCard(card, "player")}>Play Card</button>
-        </div>
-      ))}
-    </div>
-    
-    <div className="grid grid-cols-5 gap-5">
-      {playerHand && playerHand.map((card) =>(
+      <div>
+
+      {playerBench && playerBench.map((card) =>(
         <div key={card.id}>
-          <Card  name={card.name} attacks={card.attacks} hp={card.hp} type={card.types} />
-          <button onClick={ () => playCard(card, "player")}>Play Card</button>
-        </div>
-        
-      ))}
+            <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
+            <button onClick={() => setActiveCard(card, "player")}>Play Card</button>
+          </div>
+        ))}
+      {opponentBench && opponentBench.map((card) =>(
+        <div key={card.id}>
+            <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
+            <button onClick={() => setActiveCard(card, "opponent")}>Play Card</button>
+          </div>
+        ))}
+      </div>
+      <div>
+        {opponentHand && opponentHand.map((card) =>(
+        <div key={card.id}>
+            <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
+            <button onClick={() => playCard(card, "opponent")}>Play Card</button>
+          </div>
+        ))}
+      </div>
+
     </div>
     </>
   )

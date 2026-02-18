@@ -1,6 +1,5 @@
 import {create} from "zustand"
 import type { PokemonCard, Attack } from "../types/card";
-import { useRandomPokemonCards } from "../hooks/usePokemon";
 
 interface BattleState {
   // Player
@@ -79,7 +78,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   setActiveCard: (card, player) => set((state) => {
     const bench = player === 'player' ? state.playerBench : state.opponentBench
     const newBench = bench.filter(b => b.id !== card.id)
-    // console.log(card)
 
     return player === "player" ? {playerActiveCard: card, playerBench: newBench} : {opponentActiveCard: card, opponentBench: newBench}
   }),
