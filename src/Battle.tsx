@@ -4,6 +4,7 @@ import Card from "./components/card/Card";
 import { useEffect, useState } from "react";
 import HealthBar from "./components/health-bar/HealthBar";
 import type { Attack, PokemonCard } from "./types/card";
+import Hand from "./components/hand/Hand";
 
 const Battle = () => {
   const { gameStatus, turnNumber, playerActiveCard, opponentActiveCard, winner, resetBattle} = useBattleStore();
@@ -30,7 +31,6 @@ const Battle = () => {
 
   useEffect(() => {
     if (playerHP <= 70) {
-      console.log('woo')
       setPlayerColor("#69210A")
     } else if ( playerHP > 71 && playerHP <= 89 ) {
       setPlayerColor("#FFC12E");
@@ -50,6 +50,7 @@ const Battle = () => {
   const handleStart = async () => {
     const playerDeck = await pokemonApi.getRandomCards(20);
     const opponentDeck = await pokemonApi.getRandomCards(20);
+    
     startBattle(playerDeck, opponentDeck);
   }
 
@@ -73,12 +74,8 @@ const Battle = () => {
     <div className="grid grid-cols-[250px_1fr_250px] gap-4 hr-screen p-4">
       <div>
         <HealthBar text={`Player 1 ${playerHP} HP` } width={playerHP} fillColor={playerColor}/>
-        {playerHand && playerHand.map((card) =>(
-          <div key={card.id} style={{paddingTop: "15px"}}>
-            <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types} />
-            <button onClick={ () => handlePlayCard(card, "player")}>Play Card</button>
-          </div>
-          
+        {playerHand && playerHand.map((card, index) => (
+          <Hand key={index} player="player" cards={card} onPlay={() => handlePlayCard(card, "player")}/>
         ))}
       </div>
 
@@ -96,11 +93,8 @@ const Battle = () => {
       </div>
       <div>
         <HealthBar text={`Player 2 ${opponentHP} HP` } width={opponentHP} fillColor={opponentColor}/>
-        {opponentHand && opponentHand.map((card) =>(
-        <div key={card.id} style={{paddingTop: "15px"}}>
-            <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
-            <button onClick={() => handlePlayCard(card, "opponent")}>Play Card</button>
-          </div>
+        {opponentHand && opponentHand.map((card, index) =>(
+          <Hand key={index} player="opponent" cards={card} onPlay={() => handlePlayCard(card, "opponent")}/>
         ))}
       </div>
 
