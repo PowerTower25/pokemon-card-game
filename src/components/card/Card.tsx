@@ -5,10 +5,8 @@ import { useBattleStore } from "../../stores/battleStore";
 import type { Attack } from "../../types/card";
 const Card = ({attacks, name, hp, type, onAttack, attacker}) => {
   const [isAttacking, setIsAttacking] = useState(false);
-
-  const card = useBattleStore((state) => attacker === "player" ? state.playerActiveCard : state.opponentActiveCard)
   const currentTurn = useBattleStore((state) => state.currentTurn);
-  const attackWithCard = useBattleStore((state) => state.attackWithCard)
+
   
   const isDisabled = currentTurn !== attacker
   const handleAttackClick = (attack: Attack, attacker: string) => {

@@ -99,7 +99,6 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     let newActiveCard = defenderActiveCard;
     let newHP = currentHP
 
-    console.log(defenderActiveCard, " defender")
 
     let newDiscardPile = defender === "player" ? [...state.playerDiscardPile] : [...state.opponentDiscardPile]
 

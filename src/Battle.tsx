@@ -64,7 +64,6 @@ const Battle = () => {
 
   const handleAttack = (attack: Attack, attacker: 'player' | 'opponent') => {
     if (currentTurn !== attacker) return;
-
     attackWithCard(attack, attacker)
 
     endTurn();
@@ -84,12 +83,12 @@ const Battle = () => {
       <div className="grid grid-cols-[1fr_1fr] gap-2">
       {playerBench && playerBench.map((card) =>(
         <div key={card.id}>
-            <Card name={card.name} attacker="player" onAttack={handleAttack} attacks={card.attacks} hp={card.hp} type={card.types}/>
+            <Card name={card.name} attacker="player" onAttack={handleAttack} attacks={card.attacks} hp={playerActiveCard?.hp} type={card.types}/>
           </div>
         ))}
       {opponentBench && opponentBench.map((card) =>(
         <div key={card.id}>
-            <Card name={card.name} attacker="opponent" attacks={card.attacks} onAttack={handleAttack} hp={card.hp} type={card.types}/>
+            <Card name={card.name} attacker="opponent" attacks={card.attacks} onAttack={handleAttack} hp={opponentActiveCard?.hp} type={card.types}/>
           </div>
         ))}
       </div>
