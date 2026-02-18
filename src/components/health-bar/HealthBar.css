@@ -1,0 +1,11 @@
+.bar-chart {
+  height: 20px;
+  margin-bottom: 15px;
+  border-radius: 50%;
+}
+
+  .bar-chart__fill {
+		height: 100%;
+		display: block;
+    border-radius: 10px;
+  }

@@ -1,6 +1,8 @@
 import { useBattleStore } from "./stores/battleStore";
 import {pokemonApi} from "./api/pokemon"
-import Card from "./components/Card";
+import Card from "./components/card/Card";
+import { useState } from "react";
+import HealthBar from "./components/health-bar/HealthBar";
 
 const Battle = () => {
   const { gameStatus, turnNumber, playerActiveCard, opponentActiveCard, attackWithCard, endTurn, winner, resetBattle} = useBattleStore();
@@ -17,6 +19,7 @@ const Battle = () => {
   const playCard = useBattleStore((state) => state.playCard);
   const setActiveCard = useBattleStore((state) => state.setActiveCard);
   const currentTurn = useBattleStore((state) => state.currentTurn);
+  const [color, setColor] = useState("#4C9C00")
 
   
 
@@ -26,11 +29,6 @@ const Battle = () => {
     startBattle(playerDeck, opponentDeck);
   }
 
-  const handleEndTurn = (card, person) => {
-
-  }
-
-
 
   return (
     <>
@@ -38,9 +36,9 @@ const Battle = () => {
     <button onClick={() => endTurn()} className="cursor-pointer bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">End Turn!</button>
     <div className="grid grid-cols-[250px_1fr_250px] gap-4 hr-screen p-4">
       <div>
-        <p>Player 1 HP {playerHP}</p>
+        <HealthBar text={`Player 1 ${playerHP} HP` } width={playerHP} fillColor={color}/>
         {playerHand && playerHand.map((card) =>(
-          <div key={card.id}>
+          <div key={card.id} style={{paddingTop: "15px"}}>
             <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types} />
             <button disabled={currentTurn !== "player"} onClick={ () => playCard(card, "player")}>Play Card</button>
           </div>
@@ -63,9 +61,9 @@ const Battle = () => {
         ))}
       </div>
       <div>
-        <p>Player 2 HP {opponentHP}</p>
+        <HealthBar text={`Player 2 ${opponentHP} HP` } width={opponentHP} fillColor={color}/>
         {opponentHand && opponentHand.map((card) =>(
-        <div key={card.id}>
+        <div key={card.id} style={{paddingTop: "15px"}}>
             <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
             <button disabled={currentTurn !== "opponent"} onClick={() => playCard(card, "opponent")}>Play Card</button>
           </div>

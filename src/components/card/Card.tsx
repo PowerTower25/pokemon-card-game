@@ -1,4 +1,4 @@
-import { useBattleStore } from "../stores/battleStore"
+import { useBattleStore } from "../../stores/battleStore"
 import "./Card.css"
 
 const Card = ({attacks, name, hp, type, attacker}) => {
