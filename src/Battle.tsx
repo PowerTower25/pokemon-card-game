@@ -83,17 +83,15 @@ const Battle = () => {
         ))}
       </div>
 
-      <div>
+      <div className="grid grid-cols-[1fr_1fr] gap-2">
       {playerBench && playerBench.map((card) =>(
         <div key={card.id}>
             <Card name={card.name} attacker="player" onAttack={handleAttack} attacks={card.attacks} hp={card.hp} type={card.types}/>
-            <button onClick={() => setActiveCard(card, "player")}>Play Card</button>
           </div>
         ))}
       {opponentBench && opponentBench.map((card) =>(
         <div key={card.id}>
             <Card name={card.name} attacker="opponent" attacks={card.attacks} onAttack={handleAttack} hp={card.hp} type={card.types}/>
-            <button onClick={() => setActiveCard(card, "opponent")}>Play Card</button>
           </div>
         ))}
       </div>

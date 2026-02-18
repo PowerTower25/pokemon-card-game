@@ -1,8 +1,22 @@
-
+import {motion} from "framer-motion";
 import "./Card.css"
+import { useState } from "react";
 const Card = ({attacks, name, hp, type, onAttack, attacker}) => {
+  const [isAttacking, setIsAttacking] = useState(false);
+  
+  const handleAttackClick = (attack, attacker) => {
+    setIsAttacking(true)
+    onAttack(attack, attacker)
+  }
   return (
-  <div>
+  <motion.div
+  animate={isAttacking ? {
+    x: attacker === "player" ? [0, 100, 0]: [0, -100, 0],
+    
+  }: {}}
+  transition={{duration: 0.8}}
+  onAnimationComplete={() => setIsAttacking(false)}
+  >
         <div className={`card bg-white rounded-lg shadow p4 border ${type}`}>
           <div className="card-header">
             <h3 className="text-xl font-bold">{name}</h3>
@@ -11,14 +25,14 @@ const Card = ({attacks, name, hp, type, onAttack, attacker}) => {
           <div>
           {attacks && attacks.map((attack, index) => (
             <div key={index} className="attack">
-              <button key={index} onClick={() => onAttack(attack, attacker)} className="cursor-pointer  border rounded-sm"><strong>{attack.name}</strong> {attack.damage ? (attack.damage) : null}</button>
+              <button onClick={() => handleAttackClick(attack, attacker)} className="cursor-pointer  border rounded-sm"><strong>{attack.name}</strong> {attack.damage ? (attack.damage) : null}</button>
               <p>{attack.effect}</p>
               <p>Cost: {attack.cost.join(', ')}</p>  
             </div>
           ))}
           </div>
         </div>
-  </div>
+  </motion.div>
   )
 }
 
