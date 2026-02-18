@@ -70,7 +70,6 @@ const Battle = () => {
   return (
     <>
     <button onClick={() => handleStart()} className="cursor-pointer bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Start the battle</button>
-    <button onClick={() => endTurn()} className="cursor-pointer bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">End Turn!</button>
     <div className="grid grid-cols-[250px_1fr_250px] gap-4 hr-screen p-4">
       <div>
         <HealthBar text={`Player 1 ${playerHP} HP` } width={playerHP} fillColor={playerColor}/>

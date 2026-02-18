@@ -1,10 +1,15 @@
 import {motion} from "framer-motion";
 import "./Card.css"
 import { useState } from "react";
+import { useBattleStore } from "../../stores/battleStore";
 const Card = ({attacks, name, hp, type, onAttack, attacker}) => {
   const [isAttacking, setIsAttacking] = useState(false);
+
+  const currentTurn = useBattleStore((state) => state.currentTurn);
   
+  const isDisabled = currentTurn !== attacker
   const handleAttackClick = (attack, attacker) => {
+    if (isDisabled) return;
     setIsAttacking(true)
     onAttack(attack, attacker)
   }
@@ -25,7 +30,7 @@ const Card = ({attacks, name, hp, type, onAttack, attacker}) => {
           <div>
           {attacks && attacks.map((attack, index) => (
             <div key={index} className="attack">
-              <button onClick={() => handleAttackClick(attack, attacker)} className="cursor-pointer  border rounded-sm"><strong>{attack.name}</strong> {attack.damage ? (attack.damage) : null}</button>
+              <button disabled={isDisabled} onClick={() => handleAttackClick(attack, attacker)} className="cursor-pointer  border rounded-sm"><strong>{attack.name}</strong> {attack.damage ? (attack.damage) : null}</button>
               <p>{attack.effect}</p>
               <p>Cost: {attack.cost.join(', ')}</p>  
             </div>
