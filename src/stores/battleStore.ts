@@ -25,7 +25,7 @@ interface BattleState {
   winner: 'player' | 'opponent' | null
 
   // Actions
-  startBattle: () => void
+  startBattle: (playerDeck: PokemonCard[], opponentDeck: PokemonCard[] ) => void
   playCard: (card: PokemonCard, player: 'player' | 'opponent') => void
   attackWithCard: (attack: Attack, attacker: "player" | "opponent") => void
   endTurn: ()  => void
@@ -52,15 +52,15 @@ export const useBattleStore = create<BattleState>((set, get) => ({
   gameStatus: 'waiting',
   winner: null,
 
-  startBattle: (playerDeck, opponentDeck) => set({
-    playerDeck,
-    opponentDeck,
+  startBattle: (playerDeck: PokemonCard[], opponentDeck: PokemonCard[]) => set({
+    playerDeck: [...playerDeck],
+    opponentDeck: [...opponentDeck],
     playerHP: 100,
     opponentHP: 100,
     opponentBench: [],
     playerBench: [],
-    playerHand: playerDeck.slice(0,3),
-    opponentHand: opponentDeck.slice(0,3),
+    playerHand: playerDeck.slice(0,5),
+    opponentHand: opponentDeck.slice(0,5),
     gameStatus: "active",
     currentTurn: "player",
     turnNumber: 1

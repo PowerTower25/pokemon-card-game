@@ -1,6 +1,6 @@
 import "./Card.css"
 
-const Card = ({attacks, name, hp, type}: {attacks: Array<T>, name: string, hp: string, type: Array<0>}) => {
+const Card = ({attacks, name, hp, type}) => {
   return (
   <div>
         <div className={`card bg-white rounded-lg shadow p4 border ${type}`}>
@@ -11,7 +11,7 @@ const Card = ({attacks, name, hp, type}: {attacks: Array<T>, name: string, hp: s
           <div>
           {attacks && attacks.map((attack, index) => (
             <div key={index} className="attack">
-              <button className="cursor-pointer"><strong>{attack.name}</strong> {attack.damage ? (attack.damage) : null}</button>
+              <button className="cursor-pointer  border rounded-sm"><strong>{attack.name}</strong> {attack.damage ? (attack.damage) : null}</button>
               <p>{attack.effect}</p>
               <p>Cost: {attack.cost.join(', ')}</p>  
             </div>
