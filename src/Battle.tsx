@@ -1,7 +1,7 @@
 import { useBattleStore } from "./stores/battleStore";
 import {pokemonApi} from "./api/pokemon"
 import Card from "./components/card/Card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import HealthBar from "./components/health-bar/HealthBar";
 
 const Battle = () => {
@@ -19,8 +19,27 @@ const Battle = () => {
   const playCard = useBattleStore((state) => state.playCard);
   const setActiveCard = useBattleStore((state) => state.setActiveCard);
   const currentTurn = useBattleStore((state) => state.currentTurn);
-  const [color, setColor] = useState("#4C9C00")
+  const [playerColor, setPlayerColor] = useState("#4C9C00");
+    const [opponentColor, setOpponentColor] = useState("#4C9C00")
 
+
+  useEffect(() => {
+    if (playerHP <= 70) {
+      console.log('woo')
+      setPlayerColor("#69210A")
+    } else if ( playerHP > 71 && playerHP <= 89 ) {
+      setPlayerColor("#FFC12E");
+    }
+  }, [playerHP])
+  
+  
+  useEffect(() => {
+    if (opponentHP <= 70) {
+      setOpponentColor("#69210A")
+    } else if ( opponentHP > 71 && opponentHP <= 89 ) {
+      setOpponentColor("#FFC12E");
+    }
+  }, [opponentHP])
   
 
   const handleStart = async () => {
@@ -36,7 +55,7 @@ const Battle = () => {
     <button onClick={() => endTurn()} className="cursor-pointer bg-red-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">End Turn!</button>
     <div className="grid grid-cols-[250px_1fr_250px] gap-4 hr-screen p-4">
       <div>
-        <HealthBar text={`Player 1 ${playerHP} HP` } width={playerHP} fillColor={color}/>
+        <HealthBar text={`Player 1 ${playerHP} HP` } width={playerHP} fillColor={playerColor}/>
         {playerHand && playerHand.map((card) =>(
           <div key={card.id} style={{paddingTop: "15px"}}>
             <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types} />
@@ -61,7 +80,7 @@ const Battle = () => {
         ))}
       </div>
       <div>
-        <HealthBar text={`Player 2 ${opponentHP} HP` } width={opponentHP} fillColor={color}/>
+        <HealthBar text={`Player 2 ${opponentHP} HP` } width={opponentHP} fillColor={opponentColor}/>
         {opponentHand && opponentHand.map((card) =>(
         <div key={card.id} style={{paddingTop: "15px"}}>
             <Card name={card.name} attacks={card.attacks} hp={card.hp} type={card.types}/>
