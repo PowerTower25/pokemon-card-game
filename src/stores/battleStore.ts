@@ -70,7 +70,7 @@ export const useBattleStore = create<BattleState>((set, get) => ({
     const bench = player === 'player' ? state.playerBench : state.opponentBench
 
     const newHand = hand.filter(c => c.id !== card.id);
-    console.log(newHand, ' hand')
+
     const newBench = [...bench, card];
     return player === "player" ? {playerHand: newHand, playerBench: newBench} : {opponentHand: newHand, opponentBench: newBench}
   }),
