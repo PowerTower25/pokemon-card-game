@@ -49,7 +49,7 @@ const Battle = () => {
       {playerHand && playerHand.map((card) =>(
         <div key={card.id}>
           <Card  name={card.name} attacks={card.attacks} hp={card.hp} type={card.types} />
-          <button onClick={ () =>selectCard(card, "player")}>Play Card</button>
+          <button onClick={ () => playCard(card, "player")}>Play Card</button>
         </div>
         
       ))}
